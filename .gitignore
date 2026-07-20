@@ -1,5 +1,7 @@
 venv/
 __pycache__/
 *.pyc
-.env
+.venv
 instance/
+storage.py
+vendor_scorecard.db
