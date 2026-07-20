@@ -9,6 +9,7 @@ Scoring model:
   that's consistently weak (a vendor can look fine on average but still be
   flagged if e.g. compliance is repeatedly bad).
 """
+
 import sqlite3
 from datetime import datetime
 from contextlib import contextmanager
@@ -24,7 +25,6 @@ CATEGORY_LABELS = {
     "responsiveness": "Responsiveness",
     "compliance": "Compliance / documentation",
 }
-
 
 @contextmanager
 def get_conn():

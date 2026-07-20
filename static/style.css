@@ -520,7 +520,7 @@ main {
 .rating-hint {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 600;
   color: var(--text-dim);
   margin-top: 6px;

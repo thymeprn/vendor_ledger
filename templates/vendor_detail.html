@@ -2,7 +2,7 @@
 {% block title %}{{ vendor.name }} — Vendor Ledger{% endblock %}
 {% block content %}
 
-<a href="{{ url_for('index') }}" class="back-link">&larr; back to dashboard</a>
+<a href="{{ url_for('index') }}" class="back-link"> <- BACK TO DASHBOARD</a>
 
 {% set pct = (vendor.overall / 5 * 100) if vendor.overall is not none else 0 %}
 {% if vendor.risk == "high" %}{% set color = "var(--risk-high)" %}
@@ -33,7 +33,7 @@
 
 {% if vendor.flags %}
 <div class="flags-box">
-  <strong>&gt; FLAGGED:</strong> consistently weak on {{ vendor.flags|join(", ") }}.
+  <strong>FLAGGED:</strong> consistently weak on {{ vendor.flags|join(", ") }}.
 </div>
 {% endif %}
 
@@ -50,7 +50,7 @@
 </div>
 {% endif %}
 
-<h2 class="section-title">// transaction history</h2>
+<h2 class="section-title">transaction history</h2>
 {% for e in vendor.entries %}
 <div class="entry-row">
   <div class="entry-date">{{ e.created_at[:10] }}</div>
