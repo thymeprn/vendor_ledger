@@ -5,7 +5,6 @@ from storage import init_db, list_vendors, get_vendor, add_entry, CATEGORIES, CA
 app = Flask(__name__)
 init_db()
 
-
 @app.route("/")
 def index():
     vendors = list_vendors()

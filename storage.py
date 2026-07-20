@@ -29,8 +29,6 @@ USE_POSTGRES = bool(DATABASE_URL)
 if USE_POSTGRES:
     import psycopg2
     import psycopg2.extras
-    # Render (and some other hosts) give a URL starting with postgres://,
-    # but psycopg2/SQLAlchemy-style drivers expect postgresql://
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
