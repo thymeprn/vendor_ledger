@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from storage import init_db, list_vendors, get_vendor, add_entry, CATEGORIES, CATEGORY_LABELS
 
 app = Flask(__name__)
+init_db()
 
 
 @app.route("/")
