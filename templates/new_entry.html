@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Log Transaction — Vendor Ledger{% endblock %}
+{% block content %}
+
+<div class="page-eyebrow">After a delivery or transaction</div>
+<h1 class="page-title">Log a Vendor Transaction</h1>
+<p class="page-sub">Answer honestly, this feeds straight into the vendor's scorecard and risk flags.</p>
+
+<div class="form-card">
+<form method="POST">
+
+  <div class="field">
+    <label for="vendor_name">Vendor name</label>
+    <input type="text" id="vendor_name" name="vendor_name" list="vendor-list" placeholder="e.g. Sharma Traders" required>
+    <datalist id="vendor-list">
+      {% for name in existing_vendors %}<option value="{{ name }}">{% endfor %}
+    </datalist>
+  </div>
+
+  {% for cat in categories %}
+  <div class="field">
+    <label>{{ labels[cat] }}</label>
+    <div class="rating-group">
+      {% for n in range(1, 6) %}
+      <div class="rating-option" data-value="{{ n }}">
+        <input type="radio" id="{{ cat }}_{{ n }}" name="{{ cat }}" value="{{ n }}" {% if n == 3 %}checked{% endif %} required>
+        <label for="{{ cat }}_{{ n }}">{{ n }}</label>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="rating-hint"><span>Poor</span><span>Excellent</span></div>
+  </div>
+  {% endfor %}
+
+  <div class="field">
+    <label for="notes">Notes (optional)</label>
+    <textarea id="notes" name="notes" rows="3" placeholder="Anything specific worth remembering..."></textarea>
+  </div>
+
+  <button type="submit" class="submit-btn">Save to ledger</button>
+</form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Vendor Ledger — Rankings{% endblock %}
+{% block content %}
+
+<div class="page-eyebrow">Live · ranked by overall score</div>
+<h1 class="page-title">Vendor Dashboard</h1>
+<p class="page-sub">Every vendor, scored from transaction history, ranked highest to lowest.</p>
+
+{% if vendors %}
+<div class="search-bar">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="7"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+  <input type="text" id="vendor-search" placeholder="Search vendors..." autocomplete="off">
+</div>
+
+<div class="vendor-grid" id="vendor-grid">
+  {% for v in vendors %}
+  {% set pct = (v.overall / 5 * 100) if v.overall is not none else 0 %}
+  {% if v.risk == "high" %}{% set color = "var(--risk-high)" %}
+  {% elif v.risk == "medium" %}{% set color = "var(--risk-medium)" %}
+  {% elif v.risk == "low" %}{% set color = "var(--risk-low)" %}
+  {% else %}{% set color = "var(--risk-grey)" %}{% endif %}
+  <a class="vendor-card" href="{{ url_for('vendor_detail', vendor_id=v.id) }}" data-name="{{ v.name|lower }}">
+    <div class="vendor-card-top">
+      <div>
+        <div class="vendor-id">VEN-{{ "%04d"|format(v.id) }} · RANK {{ "%02d"|format(loop.index) }}</div>
+        <div class="vendor-name">{{ v.name }}</div>
+      </div>
+    </div>
+    <div class="vendor-card-body">
+      <div class="gauge" style="background: conic-gradient({{ color }} {{ pct }}%, var(--border) 0);">
+        <span class="gauge-value">{{ "%.1f"|format(v.overall) if v.overall is not none else "—" }}</span>
+      </div>
+      <div class="vendor-meta">
+        <div class="entry-count">{{ v.entry_count }} transaction{{ "s" if v.entry_count != 1 else "" }} logged</div>
+        {% if v.risk == "high" %}<span class="pill pill-high">High risk</span>
+        {% elif v.risk == "medium" %}<span class="pill pill-medium">Medium risk</span>
+        {% elif v.risk == "low" %}<span class="pill pill-low">Low risk</span>
+        {% else %}<span class="pill pill-no-data">No data</span>{% endif %}
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+<div class="no-results" id="no-results">No vendors match your search 🔍</div>
+{% else %}
+<div class="empty-state">
+  <p class="page-title">No vendors logged yet</p>
+  <p>Log your first transaction to start building the dashboard.</p>
+</div>
+{% endif %}
+
+<script>
+  const searchInput = document.getElementById('vendor-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      const query = this.value.trim().toLowerCase();
+      const cards = document.querySelectorAll('#vendor-grid .vendor-card');
+      let visibleCount = 0;
+      cards.forEach(function (card) {
+        const matches = card.dataset.name.includes(query);
+        card.style.display = matches ? '' : 'none';
+        if (matches) visibleCount++;
+      });
+      document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+  }
+</script>
+
+{% endblock %}

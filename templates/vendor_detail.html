@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ vendor.name }} — Vendor Ledger{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('index') }}" class="back-link">&larr; back to dashboard</a>
+
+{% set pct = (vendor.overall / 5 * 100) if vendor.overall is not none else 0 %}
+{% if vendor.risk == "high" %}{% set color = "var(--risk-high)" %}
+{% elif vendor.risk == "medium" %}{% set color = "var(--risk-medium)" %}
+{% elif vendor.risk == "low" %}{% set color = "var(--risk-low)" %}
+{% else %}{% set color = "var(--risk-grey)" %}{% endif %}
+
+<div class="detail-header">
+  <div class="detail-header-left">
+    <div class="gauge" style="background: conic-gradient({{ color }} {{ pct }}%, var(--border) 0);">
+      <span class="gauge-value">{{ "%.1f"|format(vendor.overall) if vendor.overall is not none else "—" }}</span>
+    </div>
+    <div>
+      <div class="vendor-id">VEN-{{ "%04d"|format(vendor.id) }}</div>
+      <h1 class="page-title" style="margin-bottom:4px;">{{ vendor.name }}</h1>
+      <p class="page-sub" style="margin-bottom:0;">
+        {{ vendor.entries|length }} transaction{{ "s" if vendor.entries|length != 1 else "" }} logged
+      </p>
+    </div>
+  </div>
+  <div>
+    {% if vendor.risk == "high" %}<span class="pill pill-high">High risk</span>
+    {% elif vendor.risk == "medium" %}<span class="pill pill-medium">Medium risk</span>
+    {% elif vendor.risk == "low" %}<span class="pill pill-low">Low risk</span>
+    {% else %}<span class="pill pill-no-data">No data</span>{% endif %}
+  </div>
+</div>
+
+{% if vendor.flags %}
+<div class="flags-box">
+  <strong>&gt; FLAGGED:</strong> consistently weak on {{ vendor.flags|join(", ") }}.
+</div>
+{% endif %}
+
+{% if vendor.category_avgs %}
+<div class="category-grid">
+  {% for cat, avg in vendor.category_avgs.items() %}
+  <div class="category-card">
+    <div class="category-label">{{ labels[cat] }}</div>
+    <div class="category-score {{ 'weak' if avg is not none and avg <= 2.0 else '' }}">
+      {{ "%.1f"|format(avg) if avg is not none else "—" }}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<h2 class="section-title">// transaction history</h2>
+{% for e in vendor.entries %}
+<div class="entry-row">
+  <div class="entry-date">{{ e.created_at[:10] }}</div>
+  <div class="entry-scores">
+    {% for cat in labels.keys() %}
+    <span class="entry-score-item">{{ labels[cat] }}: <b>{{ e[cat] }}</b></span>
+    {% endfor %}
+  </div>
+  {% if e.notes %}<div class="entry-notes">{{ e.notes }}</div>{% endif %}
+</div>
+{% endfor %}
+
+{% endblock %}
