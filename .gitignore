@@ -3,5 +3,4 @@ __pycache__/
 *.pyc
 .venv
 instance/
-storage.py
 vendor_scorecard.db
